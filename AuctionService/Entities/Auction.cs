@@ -1,0 +1,29 @@
+﻿namespace AuctionService.Entities;
+
+/// <summary>
+/// Represents the Auction entity.
+/// </summary>
+internal sealed class Auction
+{
+    public Guid Id { get; set; }
+
+    public int ReversePrice { get; set; } = 0;
+
+    public string Seller { get; set; } = string.Empty;
+
+    public string Winner { get; set; } = string.Empty;
+
+    public int? SoldAmount { get; set; }
+
+    public int? CurrentHighBid { get; set; }
+
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+
+    public DateTime AuctionEnd { get; set; }
+
+    public Status Status { get; set; }
+
+    public required Item Item { get; set; }
+}
