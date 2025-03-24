@@ -22,7 +22,7 @@ internal sealed class Item
 
     public string ImageUrl { get; set; } = string.Empty;
 
-    public required Auction Auction { get; set; }
+    public Auction Auction { get; set; }
 
     public Guid AuctionId { get; set; }
 }
