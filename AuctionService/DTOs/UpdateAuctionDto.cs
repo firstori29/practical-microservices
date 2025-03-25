@@ -1,6 +1,6 @@
 ﻿namespace AuctionService.DTOs;
 
-internal sealed class updateAuctionDto
+internal sealed class UpdateAuctionDto
 {
     public string? Make { get; set; } = string.Empty;
 
