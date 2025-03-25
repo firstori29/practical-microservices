@@ -5,7 +5,7 @@ internal sealed class GetAuctionById : IEndpoint
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapGet("api/auctions/{id:guid}",
-            async Task<Results<Ok<AuctionDto>, NotFound>> (AuctionDbContext auctionDbContext, Guid id) =>
+            async Task<IResult> (AuctionDbContext auctionDbContext, Guid id) =>
             {
                 var auctions = await auctionDbContext.Auctions
                     .Include(a => a.Item)

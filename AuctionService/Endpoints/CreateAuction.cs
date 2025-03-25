@@ -5,7 +5,7 @@ internal sealed class CreateAuction : IEndpoint
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapPost("api/auctions",
-            async Task<Results<Created<AuctionDto>, BadRequest>> (CreateAuctionDto request,
+            async Task<IResult> (CreateAuctionDto request,
                 AuctionDbContext dbContext) =>
             {
                 var auctionsDto = new AuctionDto();
