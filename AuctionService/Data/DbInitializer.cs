@@ -1,6 +1,6 @@
 ﻿namespace AuctionService.Data;
 
-internal sealed class DbInitializer
+internal static class DbInitializer
 {
     public static void InitDb(WebApplication app)
     {

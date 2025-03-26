@@ -1,8 +1,12 @@
+using SearchService.Extensions;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+builder.Services.AddEndpoints(typeof(Program).Assembly);
 
 var app = builder.Build();
 
@@ -12,13 +16,16 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-await DB.InitAsync("SearchDb",
-    MongoClientSettings.FromConnectionString(builder.Configuration.GetConnectionString("MongoDbConnection")));
+try
+{
+    await DbInitializer.InitDb(app);
+}
+catch (Exception e)
+{
+    Console.WriteLine(e);
+    throw;
+}
 
-await DB.Index<Item>()
-    .Key(i => i.Make, KeyType.Text)
-    .Key(i => i.Model, KeyType.Text)
-    .Key(i => i.Color, KeyType.Text)
-    .CreateAsync();
+app.MapEndpoints();
 
 app.Run();
