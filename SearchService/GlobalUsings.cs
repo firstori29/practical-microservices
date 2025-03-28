@@ -7,3 +7,4 @@ global using MongoDB.Entities;
 global using SearchService.Data;
 global using SearchService.Endpoints;
 global using SearchService.Models;
+global using SearchService.RequestHelpers;
