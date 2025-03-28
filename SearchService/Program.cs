@@ -6,7 +6,7 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddEndpoints(typeof(Program).Assembly);
 
-builder.Services.AddHttpClient<AuctionServiceHttpClient>();
+builder.Services.AddHttpClient<AuctionServiceHttpClient>().AddPolicyHandler(GetPolicy());
 
 var app = builder.Build();
 
@@ -16,16 +16,25 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-try
+app.Lifetime.ApplicationStarted.Register(async void () =>
 {
-    await DbInitializer.InitDb(app);
-}
-catch (Exception e)
-{
-    Console.WriteLine(e);
-    throw;
-}
+    try
+    {
+        await DbInitializer.InitDb(app);
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine(e);
+    }
+});
 
 app.MapEndpoints();
 
 app.Run();
+
+return;
+
+static AsyncRetryPolicy<HttpResponseMessage> GetPolicy() =>
+    HttpPolicyExtensions.HandleTransientHttpError()
+        .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.NotFound)
+        .WaitAndRetryForeverAsync(_ => TimeSpan.FromSeconds(3));

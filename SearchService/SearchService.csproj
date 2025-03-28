@@ -9,6 +9,7 @@
     <ItemGroup>
         <PackageReference Include="AutoMapper" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi"/>
+        <PackageReference Include="Microsoft.Extensions.Http.Polly" />
         <PackageReference Include="MongoDB.Entities" />
     </ItemGroup>
 
