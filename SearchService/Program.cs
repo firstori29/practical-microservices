@@ -1,5 +1,3 @@
-using SearchService.Extensions;
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -7,6 +5,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 
 builder.Services.AddEndpoints(typeof(Program).Assembly);
+
+builder.Services.AddHttpClient<AuctionServiceHttpClient>();
 
 var app = builder.Build();
 

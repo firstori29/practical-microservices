@@ -7,6 +7,8 @@ global using AuctionService.DTOs;
 global using AuctionService.Endpoints;
 global using AuctionService.Entities;
 global using AuctionService.Entities.Enums;
+global using AutoMapper;
+global using AutoMapper.QueryableExtensions;
 global using Microsoft.AspNetCore.Http.HttpResults;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.DependencyInjection.Extensions;
