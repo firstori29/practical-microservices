@@ -9,7 +9,9 @@ internal sealed class AuctionServiceHttpClient(HttpClient httpClient, IConfigura
             .Project(x => x.UpdatedAt.ToString())
             .ExecuteFirstAsync();
 
+        var auctionUrl = config["AuctionServiceUrl"];
+
         return await httpClient.GetFromJsonAsync<List<Item>>(
-            $"{config["AuctionServiceUrl"]}/api/auctions?date={lastUpdated}");
+            $"{auctionUrl}/api/auctions?date={lastUpdated}");
     }
 }

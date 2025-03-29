@@ -8,6 +8,14 @@ builder.Services.AddEndpoints(typeof(Program).Assembly);
 
 builder.Services.AddHttpClient<AuctionServiceHttpClient>().AddPolicyHandler(GetPolicy());
 
+builder.Services.AddMassTransit(configurator =>
+{
+    configurator.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.ConfigureEndpoints(context);
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

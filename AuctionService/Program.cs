@@ -1,5 +1,3 @@
-using AuctionService.Extensions;
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -12,6 +10,14 @@ builder.Services.AddDbContext<AuctionDbContext>(options =>
 });
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+builder.Services.AddMassTransit(configurator =>
+{
+    configurator.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.ConfigureEndpoints(context);
+    });
+});
 
 builder.Services.AddEndpoints(typeof(Program).Assembly);
 

@@ -8,9 +8,14 @@
 
     <ItemGroup>
         <PackageReference Include="AutoMapper" />
+        <PackageReference Include="MassTransit.RabbitMQ" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi"/>
         <PackageReference Include="Microsoft.Extensions.Http.Polly" />
         <PackageReference Include="MongoDB.Entities" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Contracts\Contracts.csproj" />
     </ItemGroup>
 
 </Project>
