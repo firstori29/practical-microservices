@@ -4,16 +4,19 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 builder.Services.AddEndpoints(typeof(Program).Assembly);
 
 builder.Services.AddHttpClient<AuctionServiceHttpClient>().AddPolicyHandler(GetPolicy());
 
 builder.Services.AddMassTransit(configurator =>
 {
-    configurator.UsingRabbitMq((context, cfg) =>
-    {
-        cfg.ConfigureEndpoints(context);
-    });
+    configurator.AddConsumersFromNamespaceContaining<AuctionCreatedConsumer>();
+    
+    configurator.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter("search", false));
+
+    configurator.UsingRabbitMq((context, cfg) => { cfg.ConfigureEndpoints(context); });
 });
 
 var app = builder.Build();
