@@ -15,13 +15,13 @@ internal sealed class CreateAuction : IEndpoint
 
                 await dbContext.Auctions.AddAsync(auction);
 
-                var result = await dbContext.SaveChangesAsync() > 0;
-
                 var newAuction = mapper.Map<AuctionDto>(auction);
 
-                Console.WriteLine($"--> Producing auction created: {newAuction.Id}");
-                
                 await publishEndpoint.Publish(mapper.Map<AuctionCreated>(newAuction));
+
+                var result = await dbContext.SaveChangesAsync() > 0;
+
+                Console.WriteLine($"--> Producing auction created: {newAuction.Id}");
 
                 if (!result) return TypedResults.BadRequest();
 

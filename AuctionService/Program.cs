@@ -13,6 +13,13 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddMassTransit(configurator =>
 {
+    configurator.AddEntityFrameworkOutbox<AuctionDbContext>(opt =>
+    {
+        opt.QueryDelay = TimeSpan.FromSeconds(10);
+        opt.UsePostgres();
+        opt.UseBusOutbox();
+    });
+    
     configurator.UsingRabbitMq((context, cfg) =>
     {
         cfg.ConfigureEndpoints(context);
