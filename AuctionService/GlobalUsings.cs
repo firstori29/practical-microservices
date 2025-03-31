@@ -10,6 +10,7 @@ global using AuctionService.Entities.Enums;
 global using AuctionService.Extensions;
 global using AutoMapper;
 global using AutoMapper.QueryableExtensions;
+global using Contracts;
 global using MassTransit;
 global using Microsoft.AspNetCore.Http.HttpResults;
 global using Microsoft.EntityFrameworkCore;

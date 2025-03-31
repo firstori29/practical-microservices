@@ -1,8 +1,8 @@
 ﻿namespace AuctionService.DTOs;
 
-internal sealed class UpdateAuctionDto
+internal sealed record UpdateAuctionDto
 {
-    public string? Make { get; set; } = string.Empty;
+    public string? Make { get; init; } = string.Empty;
 
     public string? Model { get; set; } = string.Empty;
 

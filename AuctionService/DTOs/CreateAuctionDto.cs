@@ -1,6 +1,6 @@
 ﻿namespace AuctionService.DTOs;
 
-internal sealed class CreateAuctionDto
+internal sealed record CreateAuctionDto
 {
     [Required]
     public string Make { get; set; } = string.Empty;

@@ -1,6 +1,6 @@
 ﻿namespace AuctionService.DTOs;
 
-internal sealed class AuctionDto
+internal sealed record AuctionDto
 {
     public Guid Id { get; set; }
 

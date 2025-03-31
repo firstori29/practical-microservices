@@ -5,54 +5,27 @@ internal sealed class CreateAuction : IEndpoint
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapPost("api/auctions",
-            async Task<IResult> (CreateAuctionDto request,
-                AuctionDbContext dbContext) =>
+            async Task<IResult> (CreateAuctionDto createAuctionDto,
+                AuctionDbContext dbContext, IMapper mapper, IPublishEndpoint publishEndpoint) =>
             {
-                var auctionsDto = new AuctionDto();
+                var auction = mapper.Map<Auction>(createAuctionDto);
 
-                var auction = new Auction
-                {
-                    ReservePrice = request.ReservePrice,
-                    AuctionEnd = request.AuctionEnd,
-                    Item = new Item
-                    {
-                        Make = request.Make,
-                        Model = request.Model,
-                        Year = request.Year,
-                        Color = request.Color,
-                        Mileage = request.Mileage,
-                        ImageUrl = request.ImageUrl
-                    },
-                    Seller = "test" // todo: add current user as seller
-                };
+                // TODO: Add current user as seller.
+                auction.Seller = "test";
 
-                var entityEntry = await dbContext.Auctions.AddAsync(auction);
-
-                if (entityEntry.State != EntityState.Added)
-                    return TypedResults.Created("api/auctions", auctionsDto);
+                await dbContext.Auctions.AddAsync(auction);
 
                 var result = await dbContext.SaveChangesAsync() > 0;
 
+                var newAuction = mapper.Map<AuctionDto>(auction);
+
+                Console.WriteLine($"--> Producing auction created: {newAuction.Id}");
+                
+                await publishEndpoint.Publish(mapper.Map<AuctionCreated>(newAuction));
+
                 if (!result) return TypedResults.BadRequest();
 
-                auctionsDto.Id = auction.Id;
-                auctionsDto.ReservePrice = auction.ReservePrice;
-                auctionsDto.Seller = auction.Seller;
-                auctionsDto.Winner = auction.Winner;
-                auctionsDto.SoldAmount = auction.SoldAmount;
-                auctionsDto.CurrentHighBid = auction.CurrentHighBid;
-                auctionsDto.CreatedAt = auction.CreatedAt;
-                auctionsDto.UpdatedAt = auction.UpdatedAt;
-                auctionsDto.AuctionEnd = auction.AuctionEnd;
-                auctionsDto.Status = auction.Status.ToString();
-                auctionsDto.Make = auction.Item.Make;
-                auctionsDto.Model = auction.Item.Model;
-                auctionsDto.Year = auction.Item.Year;
-                auctionsDto.Color = auction.Item.Color;
-                auctionsDto.Mileage = auction.Item.Mileage;
-                auctionsDto.ImageUrl = auction.Item.ImageUrl;
-
-                return TypedResults.Created("api/auctions", auctionsDto);
+                return TypedResults.Created("api/auctions", newAuction);
             });
     }
 }
