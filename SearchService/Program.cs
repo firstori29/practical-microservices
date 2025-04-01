@@ -13,10 +13,20 @@ builder.Services.AddHttpClient<AuctionServiceHttpClient>().AddPolicyHandler(GetP
 builder.Services.AddMassTransit(configurator =>
 {
     configurator.AddConsumersFromNamespaceContaining<AuctionCreatedConsumer>();
-    
+
     configurator.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter("search", false));
 
-    configurator.UsingRabbitMq((context, cfg) => { cfg.ConfigureEndpoints(context); });
+    configurator.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.ReceiveEndpoint("search-auction-created", e =>
+        {
+            e.UseMessageRetry(r => r.Interval(5, 5));
+
+            e.ConfigureConsumer<AuctionCreatedConsumer>(context);
+        });
+
+        cfg.ConfigureEndpoints(context);
+    });
 });
 
 var app = builder.Build();

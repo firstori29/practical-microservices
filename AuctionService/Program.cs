@@ -19,11 +19,8 @@ builder.Services.AddMassTransit(configurator =>
         opt.UsePostgres();
         opt.UseBusOutbox();
     });
-    
-    configurator.UsingRabbitMq((context, cfg) =>
-    {
-        cfg.ConfigureEndpoints(context);
-    });
+
+    configurator.UsingRabbitMq((context, cfg) => { cfg.ConfigureEndpoints(context); });
 });
 
 builder.Services.AddEndpoints(typeof(Program).Assembly);
