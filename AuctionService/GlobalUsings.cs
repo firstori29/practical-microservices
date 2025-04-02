@@ -2,6 +2,7 @@
 
 global using System.ComponentModel.DataAnnotations;
 global using System.Reflection;
+global using AuctionService.Consumers;
 global using AuctionService.Data;
 global using AuctionService.DTOs;
 global using AuctionService.Endpoints;
