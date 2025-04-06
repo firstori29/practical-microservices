@@ -10,7 +10,7 @@ public sealed class AuctionUpdatedConsumer(IMapper mapper) : IConsumer<AuctionUp
 
         var item = mapper.Map<Item>(context.Message);
 
-        await DB.Update<Item>()
+        var result = await DB.Update<Item>()
             .Match(i => i.ID == id)
             .Modify(i => i.Make, item.Make)
             .Modify(i => i.Model, item.Model)
@@ -18,5 +18,8 @@ public sealed class AuctionUpdatedConsumer(IMapper mapper) : IConsumer<AuctionUp
             .Modify(i => i.Mileage, item.Mileage)
             .Modify(i => i.Year, item.Year)
             .ExecuteAsync();
+
+        if (!result.IsAcknowledged)
+            throw new MessageException(typeof(AuctionDeleted), "Problem updating auction.");
     }
 }

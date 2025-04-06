@@ -8,6 +8,9 @@ public sealed class AuctionDeletedConsumer : IConsumer<AuctionDeleted>
 
         Console.WriteLine($"--> Consuming auction deleted: {id}");
 
-        await DB.DeleteAsync<Item>(id);
+        var result = await DB.DeleteAsync<Item>(id);
+
+        if (!result.IsAcknowledged)
+            throw new MessageException(typeof(AuctionDeleted), "Problem deleting auction.");
     }
 }
