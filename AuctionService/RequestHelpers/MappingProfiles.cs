@@ -10,5 +10,6 @@ internal sealed class MappingProfiles : Profile
             .ForMember(a => a.Item, o => o.MapFrom(s => s));
         CreateMap<CreateAuctionDto, Item>();
         CreateMap<AuctionDto, AuctionCreated>();
+        CreateMap<AuctionDto, AuctionUpdated>();
     }
 }
