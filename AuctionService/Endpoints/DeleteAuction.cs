@@ -1,15 +1,19 @@
 ﻿namespace AuctionService.Endpoints;
 
-internal sealed class DeleteAuction : IEndpoint
+internal sealed class DeleteAuction(IHttpContextAccessor httpContextAccessor) : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapDelete("api/auctions/{id:guid}",
+            [Authorize]
             async Task<IResult> (Guid id, AuctionDbContext dbContext, IPublishEndpoint publishEndpoint) =>
             {
                 var auction = await dbContext.Auctions.FindAsync(id);
 
-                if (auction is null) return Results.NotFound();
+                if (auction is null) return TypedResults.NotFound();
+                
+                if (auction.Seller != httpContextAccessor.HttpContext?.User.Identity?.Name)
+                    return TypedResults.Forbid();
 
                 dbContext.Auctions.Remove(auction);
 
@@ -19,7 +23,7 @@ internal sealed class DeleteAuction : IEndpoint
 
                 Console.WriteLine($"--> Producing auction deleted: {auction.Id}");
 
-                return !result ? Results.BadRequest("Cannot delete auction") : TypedResults.Ok();
+                return !result ? TypedResults.BadRequest("Cannot delete auction") : TypedResults.Ok();
             });
     }
 }

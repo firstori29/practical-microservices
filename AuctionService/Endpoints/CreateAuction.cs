@@ -1,17 +1,16 @@
 ﻿namespace AuctionService.Endpoints;
 
-internal sealed class CreateAuction : IEndpoint
+internal sealed class CreateAuction(IHttpContextAccessor httpContextAccessor) : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapPost("api/auctions",
-            async Task<IResult> (CreateAuctionDto createAuctionDto,
+            [Authorize] async Task<IResult> (CreateAuctionDto createAuctionDto,
                 AuctionDbContext dbContext, IMapper mapper, IPublishEndpoint publishEndpoint) =>
             {
                 var auction = mapper.Map<Auction>(createAuctionDto);
-
-                // TODO: Add current user as seller.
-                auction.Seller = "test";
+                
+                auction.Seller = httpContextAccessor.HttpContext?.User.Identity?.Name!;
 
                 await dbContext.Auctions.AddAsync(auction);
 

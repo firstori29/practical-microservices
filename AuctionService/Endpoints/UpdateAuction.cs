@@ -1,11 +1,11 @@
 ﻿namespace AuctionService.Endpoints;
 
-internal sealed class UpdateAuction : IEndpoint
+internal sealed class UpdateAuction(IHttpContextAccessor httpContextAccessor) : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapPut("api/auctions/{id:guid}",
-            async Task<IResult> (Guid id, UpdateAuctionDto updateAuctionDto,
+            [Authorize] async Task<IResult> (Guid id, UpdateAuctionDto updateAuctionDto,
                 AuctionDbContext dbContext, IMapper mapper, IPublishEndpoint publishEndpoint) =>
             {
                 var auction = await dbContext.Auctions.Include(a => a.Item)
@@ -13,7 +13,8 @@ internal sealed class UpdateAuction : IEndpoint
 
                 if (auction is null) return TypedResults.NotFound();
 
-                // TODO: check seller == username
+                if (auction.Seller != httpContextAccessor.HttpContext?.User.Identity?.Name)
+                    return TypedResults.Forbid();
 
                 auction.Item.Make = updateAuctionDto.Make ?? auction.Item.Make;
                 auction.Item.Model = updateAuctionDto.Model ?? auction.Item.Model;

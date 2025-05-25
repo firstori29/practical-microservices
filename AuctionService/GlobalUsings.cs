@@ -13,6 +13,6 @@ global using AutoMapper;
 global using AutoMapper.QueryableExtensions;
 global using Contracts;
 global using MassTransit;
-global using Microsoft.AspNetCore.Http.HttpResults;
+global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.DependencyInjection.Extensions;
